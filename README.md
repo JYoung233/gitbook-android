@@ -5,6 +5,9 @@ An android app to read gitbook in the offline mode.
 ## Requirement
 Android 2.3+
 
+## Preview
+
+![gitbook-android](docs/preview/device-2016-03-23-225050.png)
 
 
 ## License
