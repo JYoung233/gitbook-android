@@ -1,22 +1,18 @@
 package com.github.snowdream.apps.retirement;
 
-import android.annotation.TargetApi;
-import android.content.res.AssetManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.*;
-import android.widget.*;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-
-import java.io.*;
 
 /**
  * Created by yanghui.yangh on 2016/3/4.
@@ -39,6 +35,16 @@ public class MainFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         mWebView = (WebView) view.findViewById(R.id.webview);
+        mWebView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == event.KEYCODE_BACK
+                        && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    onBackPressed();
+                    return true;
+                }
+                return false;              }
+        });
 
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setAllowFileAccess(false);
@@ -84,5 +90,16 @@ public class MainFragment extends Fragment {
         });
 
         mAdView.loadAd(adRequest);
+    }
+
+
+    public void onBackPressed() {
+        if (mWebView.canGoBack()){
+            mWebView.goBack();
+        }else {
+            if (!getFragmentManager().popBackStackImmediate()) {
+                getActivity().supportFinishAfterTransition();
+            }
+        }
     }
 }
