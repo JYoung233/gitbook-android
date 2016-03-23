@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.*;
 import android.widget.*;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -40,84 +41,47 @@ public class MainFragment extends Fragment {
         mWebView = (WebView) view.findViewById(R.id.webview);
 
         WebSettings webSettings = mWebView.getSettings();
-        // 禁止本地文件访问 (除非是在应用 assets/ 和 res/ 目录下)
         webSettings.setAllowFileAccess(false);
-
-        // android默认关闭了javascript，如果不是必要，请不要打开 (可选)
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
 
-        // 展示应用assets目录下文件内容
-//        mWebView.loadUrl("file:///android_asset/book/index.html");
+        mWebView.loadUrl("file:///android_asset/book/index.html");
 
-        String htmlFilename = "book/index.html";
-        AssetManager mgr = getResources().getAssets();
-        try {
-            InputStream in = mgr.open(htmlFilename, AssetManager.ACCESS_BUFFER);
-            String htmlContentInStringFormat = StreamToString(in);
-            in.close();
-            mWebView.loadDataWithBaseURL("file:///android_asset/book/", htmlContentInStringFormat, "text/html", "utf-8", null);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        mWebView.setWebViewClient(new WebViewClient() {
-
-                                     @Override
-                                     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-                                         WebResourceResponse response = null;
-                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-                                             response = super.shouldInterceptRequest(view,url);
-                                             if (url.contains("icon.png")){
-                                                 try {
-                                                     response = new WebResourceResponse("image/png","UTF-8",getResources().getAssets().open("icon.png"));
-                                                 } catch (IOException e) {
-                                                     e.printStackTrace();
-                                                 }
-                                             }
-                                         }
-//                return super.shouldInterceptRequest(view, url);
-                                         return  response;
-                                     }
-
-                                     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-                                     @Override
-                                     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                                         WebResourceResponse response = null;
-                                         response =  super.shouldInterceptRequest(view, request);
-
-                                         String url = request.getUrl().toString();
-
-                                         if (url.contains("icon.png")){
-                                             try {
-                                                 response = new WebResourceResponse("image/png","UTF-8",getResources().getAssets().open("icon.png"));
-                                             } catch (IOException e) {
-                                                 e.printStackTrace();
-                                             }
-                                         }
-                                         return response;
-                                     }
-                                 });
-
-        AdView mAdView = (AdView) view.findViewById(R.id.adView);
+        final AdView mAdView = (AdView) view.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
-    }
 
-    public static String StreamToString(InputStream in) throws IOException {
-        if(in == null) {
-            return "";
-        }
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
-        try {
-            Reader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            int n;
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
+        mAdView.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+                mAdView.setVisibility(View.VISIBLE);
             }
-        } finally {
-        }
-        return writer.toString();
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+                mAdView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when an ad opens an overlay that
+                // covers the screen.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the user is about to return
+                // to the application after tapping on an ad.
+            }
+        });
+
+        mAdView.loadAd(adRequest);
     }
 }
