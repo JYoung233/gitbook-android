@@ -45,6 +45,7 @@ public class MainFragment extends Fragment {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
 
+        mWebView.setWebViewClient(new WebViewClient());
         mWebView.loadUrl("file:///android_asset/book/index.html");
 
 
