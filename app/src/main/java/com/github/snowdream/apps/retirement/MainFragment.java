@@ -47,7 +47,7 @@ public class MainFragment extends Fragment {
         });
 
         WebSettings webSettings = mWebView.getSettings();
-        webSettings.setAllowFileAccess(false);
+        webSettings.setAllowFileAccess(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
 
