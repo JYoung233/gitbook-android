@@ -1,4 +1,4 @@
-package com.github.snowdream.apps.retirement;
+package com.github.snowdream.apps.gitbook;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

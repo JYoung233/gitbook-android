@@ -1,4 +1,6 @@
 buildscript {
+System.properties['com.android.build.gradle.overrideVersionCheck'] = 'true'
+
     repositories {
         jcenter { url "http://jcenter.bintray.com/" }
     }
@@ -17,7 +19,7 @@ android {
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-        applicationId "com.github.snowdream.apps.retirement"
+        applicationId "com.github.snowdream.apps.gitbook"
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 1
